@@ -5,11 +5,48 @@ import java.util.Vector;
 
 public class ArgumentProcessor {
 
-    private static String ARG_MARKER = "-" ;
-    public static String ARG_PARAM_SEPARATOR = "\\s" ;
+    public char ARG_PARAM_SEPARATOR = ' ' ;
 
-    public static HashMap<String, String> extractArgsAndValues(String argsAndValues) {
-        HashMap<String, String> extractedArgsAndValues = new HashMap<String, String>() ;
+    private String ARG_MARKER = "-" ;
+    private HashMap<String, String> extractedArgsAndValues = new HashMap<String, String>() ;
+
+    public ArgumentProcessor() {}
+
+    public HashMap<String, String> extractArgsAndProperties (String mainCommand,
+                                                             String commandsAndParameters)  {
+        HashMap<String, String> commandsAndProperties
+                = new HashMap<String, String>() ;
+
+        if(checkMainCommand(mainCommand, commandsAndParameters)) {
+            commandsAndProperties
+                    = extractCommandParameters(extractCommandFromString(mainCommand,
+                                                                        commandsAndParameters));
+        } else {
+            // throw exception
+        }
+
+        return commandsAndProperties ;
+    }
+
+    private static boolean checkMainCommand(String mainCommand, String commandsAndParameters) {
+        if(commandsAndParameters.startsWith(mainCommand)) {
+            return true ;
+        }
+        return false ;
+    }
+
+    private static String extractCommandFromString(String commandToExtract,
+                                                     String commandAndParameters) {
+        return commandAndParameters
+                .substring(commandAndParameters.indexOf(commandToExtract) + commandToExtract.length(),
+                        commandAndParameters.length());
+    }
+
+    private HashMap<String, String> extractCommandParameters(String commandParameters) {
+        return extractArgsAndValues(commandParameters.trim()) ;
+    }
+
+    private HashMap<String, String> extractArgsAndValues(String argsAndValues) {
 
         Vector<String> setOfArgsAndValues = extractTokensWithArgsAndValues(argsAndValues) ;
 
@@ -26,35 +63,50 @@ public class ArgumentProcessor {
         return extractedArgsAndValues ;
     }
 
-    private static Vector<String> extractTokensWithArgsAndValues(String argsAndValues) {
+    public int noOfArgs() {
+        return extractedArgsAndValues.size() ;
+    }
+
+    private Vector<String> extractTokensWithArgsAndValues(String argsAndValues) {
         Vector argsAndValuesTokens = new Vector() ;
+        final int OFFSET = 1 ;
 
         while (argsAndValues.length() > 0) {
             int indexOfArgMarker = getIndexOfArgMarker(argsAndValues) ;
             int indexOfNextArgMarker = getIndexOfArgMarker(argsAndValues.substring(1)) ;
 
-            String argAndMarker = argsAndValues.substring(indexOfArgMarker,
+            String argAndMarker = "" ;
+
+            if((indexOfNextArgMarker - indexOfArgMarker + 1)
+                    == argsAndValues.length()) {
+                argAndMarker = argsAndValues.substring(indexOfArgMarker,
+                        (indexOfNextArgMarker +1)) ;
+            } else {
+                argAndMarker = argsAndValues.substring(indexOfArgMarker,
                     indexOfNextArgMarker) ;
+            }
 
             argsAndValuesTokens.add(argAndMarker);
 
-            argsAndValues = argsAndValues.substring(indexOfNextArgMarker);
+            argsAndValues = argsAndValues.substring(indexOfNextArgMarker + OFFSET);
         }
 
         return argsAndValuesTokens ;
     }
 
-    private static Property splitStringWithArgAndValue(String argAndValue) {
-        String arg = argAndValue.substring(argAndValue.indexOf(ARG_MARKER),
+    private Property splitStringWithArgAndValue(String argAndValue) {
+        final int OFFSET = 1 ;
+
+        String arg = argAndValue.substring(argAndValue.indexOf(ARG_MARKER) + OFFSET,
                 argAndValue.indexOf(ARG_PARAM_SEPARATOR));
 
-        String param = argAndValue.substring(argAndValue.indexOf(ARG_PARAM_SEPARATOR),
+        String param = argAndValue.substring(argAndValue.indexOf(ARG_PARAM_SEPARATOR) + OFFSET,
                 argAndValue.length());
 
         return new Property(arg, param) ;
     }
 
-    private static int getIndexOfArgMarker(String stringWithArgMarker) {
+    private int getIndexOfArgMarker(String stringWithArgMarker) {
 
         int indexOfArgMarker = stringWithArgMarker.length() ;
 

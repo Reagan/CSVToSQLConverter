@@ -1,6 +1,7 @@
 package org.ampathkenya.screen;
 
 import org.ampathkenya.screen.config.ScreenConfig;
+import org.ampathkenya.utils.ArgumentProcessor;
 import org.ampathkenya.utils.IOUtils;
 import org.ampathkenya.utils.StringUtils;
 
@@ -29,7 +30,8 @@ public class Screen {
 
     public HashMap<String, String> getCommandParameters(String commandAndParameters,
                                                             String mainCommand) {
-        return StringUtils.extractArgsAndProperties(commandAndParameters, mainCommand) ;
+        ArgumentProcessor argumentProcessor = new ArgumentProcessor() ;
+        return argumentProcessor.extractArgsAndProperties(commandAndParameters, mainCommand) ;
     }
 
     private void outputToScreen(String stringToOutput) {
