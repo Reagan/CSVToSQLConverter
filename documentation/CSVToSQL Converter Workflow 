@@ -17,10 +17,10 @@ Step 1: Program can be used to process a single csv file or a set of csv files e
 [to folder]
 >> CSVToSQLConverter /path/to/csv/folder/
 
-The program may prompt a user to use program-defined defaults  (-d -> defaults)
+The program may prompt a user to use program-defined defaults  (-d -> defaults. -p specify path to csv files)
 
->> CSVToSQLConverter -d true /path/to/csv/file.csv
->> CSVToSQLConverter -d true /path/to/csv/folder
+>> CSVToSQLConverter -d true -p /path/to/csv/file.csv
+>> CSVToSQLConverter -d true -p /path/to/csv/folder
 
 If defaults are used, then the created SQL dump files are stored on the same location as the csv files. If defaults are used, then the script is unable to DROP tables. To allow the script to drop tables, the flag -a with attribute allow_drop_table should be used e.g.
 

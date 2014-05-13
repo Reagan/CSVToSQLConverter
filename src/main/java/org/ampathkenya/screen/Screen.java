@@ -1,11 +1,12 @@
 package org.ampathkenya.screen;
 
 import org.ampathkenya.screen.config.ScreenConfig;
-import org.ampathkenya.utils.ArgumentProcessor;
+import org.ampathkenya.utils.argumentprocessor.ArgumentProcessor;
 import org.ampathkenya.utils.IOUtils;
-import org.ampathkenya.utils.StringUtils;
+import org.ampathkenya.utils.argumentprocessor.exception.UndefinedFlagException;
+import org.ampathkenya.utils.argumentprocessor.exception.UndefinedValueException;
+import org.ampathkenya.utils.argumentprocessor.exception.UnsupportedFlagException;
 
-import java.io.IOException;
 import java.util.HashMap;
 
 public class Screen {
@@ -28,10 +29,21 @@ public class Screen {
         return IOUtils.read(System.in) ;
     }
 
-    public HashMap<String, String> getCommandParameters(String commandAndParameters,
-                                                            String mainCommand) {
+    public HashMap<String, String> getParameters(String commandAndParameters) {
         ArgumentProcessor argumentProcessor = new ArgumentProcessor() ;
-        return argumentProcessor.extractArgsAndProperties(commandAndParameters, mainCommand) ;
+        HashMap<String, String> argsAndParams = new HashMap<String, String>() ;
+
+        try {
+            argsAndParams = argumentProcessor.extractArgsAndProperties(commandAndParameters) ;
+        } catch (UndefinedValueException e) {
+
+        } catch (UndefinedFlagException e) {
+
+        } catch (UnsupportedFlagException e) {
+
+        }
+
+        return argsAndParams;
     }
 
     private void outputToScreen(String stringToOutput) {
