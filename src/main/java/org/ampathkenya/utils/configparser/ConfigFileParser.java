@@ -38,7 +38,7 @@ public class ConfigFileParser {
                     secondSquareBracket);
 
             extractedTableData.add(tableConfigData);
-            configs = configs.substring(secondSquareBracket);
+            configs = configs.substring(secondSquareBracket).replaceFirst("\n", "");
         }
         return extractedTableData;
     }

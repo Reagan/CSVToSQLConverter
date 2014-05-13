@@ -18,6 +18,11 @@ public class ConfigFileParserTest extends TestCase {
                  "id=int\n" +
                  "firstName=varchar(255)\n" +
                  "secondName=varchar(255)\n" +
+                 "gender=enum('M','F')\n" +
+                 "[table2]\n" +
+                 "id=int\n" +
+                 "firstName=varchar(255)\n" +
+                 "secondName=varchar(255)\n" +
                  "gender=enum('M','F')\n";
 
         try {
@@ -32,11 +37,11 @@ public class ConfigFileParserTest extends TestCase {
 
     public void testThatConfigParserObjectIsCreated() throws IOException{
         Assert.assertNotNull("Test that table configs not null",tableConfigs);
-        Assert.assertEquals("Test that size of tableConfig is 1",1,tableConfigs.size());
+        Assert.assertEquals("Test that size of tableConfig is 2", 2, tableConfigs.size());
     }
 
     public void testThatTableConfigReturnsCorrectTableName() throws IOException{
-        Assert.assertEquals("Test that tableConfig returns table1","table1",tableConfigs.get(0).getTableName());
+        Assert.assertEquals("Test that tableConfig returns table1", "table1", tableConfigs.get(0).getTableName());
     }
 
     public void testThatTableConfigReturnsCorrectTableConfigProperties() throws IOException{
