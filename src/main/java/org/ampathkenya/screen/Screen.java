@@ -11,13 +11,11 @@ import java.util.HashMap;
 
 public class Screen {
 
-    protected static Screen screen ;
+    protected Screen screen ;
     protected ScreenConfig config;
 
-    private Screen() {}
+    public Screen() {
 
-    public static Screen initialize() {
-        return screen = new Screen() ;
     }
 
     public <T> void displayText(T messageToDisplay) {

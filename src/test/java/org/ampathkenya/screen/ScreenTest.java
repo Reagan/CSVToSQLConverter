@@ -10,7 +10,7 @@ public class ScreenTest extends TestCase {
 
     @Override
     public void setUp() {
-        screen = Screen.initialize()  ;
+        screen = new Screen()  ;
     }
 
     public void testThatScreenObjectWasCreated() {
