@@ -11,16 +11,18 @@ public class ConfigFileParser {
 
     private final String OPENING_SQUARE_BRACKET = "[";
     private final String CLOSING_SQUARE_BRACKET = "]";
+    private String configs ;
     private ArrayList<TableConfig> tableConfigs = new ArrayList<TableConfig>();
 
     public ConfigFileParser(String configs) throws IOException {
         if (configs.length() > 0) {
-            tableConfigs = parseConfigs(configs);
+            this.configs = configs ;
         }
     }
 
-    public ArrayList<TableConfig> parseConfigs(String configs) throws IOException {
-        return createTableConfigs(extractTables(configs));
+    public ArrayList<TableConfig> parseConfigs() throws IOException {
+        tableConfigs = createTableConfigs(extractTables(configs));
+        return tableConfigs ;
     }
 
     private ArrayList<String> extractTables(String configs) {

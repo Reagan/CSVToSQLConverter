@@ -27,7 +27,7 @@ public class ConfigFileParserTest extends TestCase {
 
         try {
             configFileParser = new ConfigFileParser(configs) ;
-            tableConfigs = configFileParser.parseConfigs(configs);
+            tableConfigs = configFileParser.parseConfigs();
         } catch (IOException e) {}
     }
 

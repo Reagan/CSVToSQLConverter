@@ -11,5 +11,8 @@ public class CSVParser {
             VARCHAR
     } ;
 
+    public String read(String csvFilePath) {
+        return "" ;
+    }
 
 }
