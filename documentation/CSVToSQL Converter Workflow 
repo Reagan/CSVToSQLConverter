@@ -12,10 +12,10 @@ How it works
 Step 1: Program can be used to process a single csv file or a set of csv files e.g.
 
 [to csv file]
->> CSVToSQLConverter /path/to/csv/file.csv
+>> CSVToSQLConverter -p /path/to/csv/file.csv
 
 [to folder]
->> CSVToSQLConverter /path/to/csv/folder/
+>> CSVToSQLConverter -p /path/to/csv/folder/
 
 The program may prompt a user to use program-defined defaults  (-d -> defaults. -p specify path to csv files)
 
@@ -24,13 +24,20 @@ The program may prompt a user to use program-defined defaults  (-d -> defaults. 
 
 If defaults are used, then the created SQL dump files are stored on the same location as the csv files. If defaults are used, then the script is unable to DROP tables. To allow the script to drop tables, the flag -a with attribute allow_drop_table should be used e.g.
 
->> CSVToSQLConverter -a allow_drop_table (-a -> allow drop table)
+>> CSVToSQLConverter -a true (-a -> allow drop table) : default value is false
+
+To specify the SQL dump files folder use the -o flag
+
+>> CSVToSQLConverter -o /path/to/output/folder
 
 A user can create a properties file with the list of tables (related to the csv files contained) and a map of the table columns and their attributes using the following structure
 
 * [] - denote the table name and there should be a csv file with the same name
 * A property e.g. id=INT, PRIMARY KEY, AUTO_INCREMENT : The 'id' column should be present in the related csv file 
 
+A config file showing the configuration for the various tables. This config file shoule be specified using the -c flag
+
+>> CSVToSQLConverter -c /path/to/config/file/path
 Step 2: For each csv file, prompt for the table name.
 [Default table name is the name of the csv file]
 
