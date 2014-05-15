@@ -16,6 +16,8 @@ public class TableConfig {
         return tableName;
     }
 
+    public Properties getTableConfigProperties() { return properties; }
+
     public String getProperty(String property) {
         String extractedProperty = "" ;
         if(properties.containsKey(property)) {

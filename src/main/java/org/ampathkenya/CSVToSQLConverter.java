@@ -9,6 +9,7 @@ import org.ampathkenya.utils.argumentprocessor.exception.UnsupportedFlagExceptio
 import org.ampathkenya.utils.configparser.ConfigFileParser;
 import org.ampathkenya.utils.configparser.TableConfig;
 import org.ampathkenya.utils.csvparser.CSVParser;
+import org.ampathkenya.utils.sqlgenerator.SQLGenerator;
 
 import java.io.File;
 import java.io.FileReader;
@@ -30,9 +31,8 @@ public class CSVToSQLConverter {
             "program using a valid path" ;
     private static final String CSV_EXTENSION = ".csv" ;
 
-
-    private CSVParser csvParser ;
     private static ConfigFileParser configFileParser ;
+    private static SQLGenerator sqlGenerator ;
     private static Screen screen ;
     private static HashMap<String, String> programParameters = new HashMap<String, String>() ;
     private static ArgumentProcessor argumentProcessor = new ArgumentProcessor() ;
@@ -233,7 +233,29 @@ public class CSVToSQLConverter {
     }
 
     private static void writeSQLDumpFile(String csvContent, TableConfig csvFileConfig) {
+        sqlGenerator = new SQLGenerator(csvContent, csvFileConfig) ;
+        outputConfigParamsForCSVFile(sqlGenerator, csvFileConfig) ;
+        writeToFile(generateSQLDump(sqlGenerator, csvContent, csvFileConfig),
+                GetParameters.getSQLDumpFilePathOutput(programParameters)) ;
+    }
 
+    private static void outputConfigParamsForCSVFile(SQLGenerator sqlGenerator, TableConfig csvTableConfig) {
+        screen.displayText(sqlGenerator.displayTableConfig()) ;
+    }
+
+    private static String generateSQLDump(SQLGenerator sqlGenerator, String csvContent,
+                                       TableConfig tableConfig) {
+        return sqlGenerator.generateSQL() ;
+    }
+
+    private static void writeToFile(String fileContent, String filePath) {
+        FileUtils fileUtils = new FileUtils(filePath) ;
+
+        try {
+            fileUtils.write(fileContent);
+        } catch (IOException e) {
+            screen.displayText(e.getMessage());
+        }
     }
 
     static class GetParameters {
