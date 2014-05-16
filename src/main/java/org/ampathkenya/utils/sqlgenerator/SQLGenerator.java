@@ -3,6 +3,7 @@ package org.ampathkenya.utils.sqlgenerator;
 import com.sun.deploy.util.Property;
 import org.ampathkenya.utils.configparser.TableConfig;
 
+import java.util.Arrays;
 import java.util.Enumeration;
 import java.util.Properties;
 
@@ -29,7 +30,8 @@ public class SQLGenerator {
             "/*!40101 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO' */;\n" +
             "/*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;\n" +
             "\n"  ;
-    private final String SQL_FOOTER = "/*!40101 SET SQL_MODE=@OLD_SQL_MODE */;\n" +
+    private final String SQL_FOOTER = "\n" +
+            "\n/*!40101 SET SQL_MODE=@OLD_SQL_MODE */;\n" +
             "/*!40014 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS */;\n" +
             "/*!40014 SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS */;\n" +
             "/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;\n" +
@@ -48,9 +50,9 @@ public class SQLGenerator {
         String tableConfigs = obtainStringTableConfigs(csvTableConfig) ;
 
         if(csvTableConfig != null) {
-            displayedConfigs += "Converting " +
+            displayedConfigs += "Converting '" +
                     tableName +
-                    " with configs\n" +
+                    "' with configs\n" +
                     tableConfigs ;
         }
 
@@ -71,7 +73,7 @@ public class SQLGenerator {
     private String obtainStringTableConfigs (TableConfig csvTableConfig) {
         String tableConfigString  = "";
 
-        Properties tableConfigs = csvTableConfig.getTableConfigProperties() ;
+        OrderedProperties tableConfigs = csvTableConfig.getTableConfigProperties() ;
         Enumeration tableConfigKeys = tableConfigs.keys() ;
 
         while (tableConfigKeys.hasMoreElements()) {
@@ -98,7 +100,7 @@ public class SQLGenerator {
                 csvTableConfig.getTableName() +
                 "` (\n" ;
 
-        Properties tableConfigs = csvTableConfig.getTableConfigProperties() ;
+        OrderedProperties tableConfigs = csvTableConfig.getTableConfigProperties() ;
         Enumeration tableConfigsKeys =  tableConfigs.keys() ;
         int tableConfigsCounter = 0 ;
         boolean isLast = false ;
@@ -107,10 +109,12 @@ public class SQLGenerator {
             String key = (String) tableConfigsKeys.nextElement() ;
             String value = (String) tableConfigs.get(key) ;
 
-            if(tableConfigsCounter == tableConfigs.size())
+            if(tableConfigsCounter == tableConfigs.size() - 1)
                 isLast = true ;
 
             DDLStatement += processKeyAndValue(key, value, isLast) ;
+
+            tableConfigsCounter ++ ;
         }
 
         DDLStatement += ") ENGINE=InnoDB DEFAULT CHARSET=latin1;\n" +
@@ -125,18 +129,19 @@ public class SQLGenerator {
         if (key.equals(PRIMARY_KEY)) {
             returnedString += "PRIMARY KEY (`" +
                     value +
-                    "`)\n" ;
+                    "`)";
         } else if (key.equals(FOREIGN_KEY)) {
             returnedString += "FOREIGN KEY " +
-                    value + "\n";
+                    value;
         } else {
-            if(!isLast)
-                returnedString += "`" + key + "` " + value + ",\n";
-            else
-                returnedString += "`" + key + "` " + value + "\n";
+            returnedString += "`" + key + "` " + value;
         }
 
-        return returnedString ;
+        if (!isLast) {
+            returnedString += "," ;
+        }
+
+        return (returnedString += "\n") ;
     }
 
     private String createDMLStatements(String csvFileContent, TableConfig tableConfig) {
@@ -172,6 +177,8 @@ public class SQLGenerator {
     }
 
     private String[] splitCSVFileToLines(String csvFileContent) {
-        return csvFileContent.split("\n") ;
+        String[] extractedcsvFileContents = csvFileContent.split("\n") ;
+        return Arrays.copyOfRange(extractedcsvFileContents,
+                1, extractedcsvFileContents.length);
     }
 }

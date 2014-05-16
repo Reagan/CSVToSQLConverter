@@ -1,13 +1,13 @@
 package org.ampathkenya.utils.configparser;
 
-import java.util.Properties;
+import org.ampathkenya.utils.sqlgenerator.OrderedProperties;
 
 public class TableConfig {
 
     private String tableName ;
-    private Properties properties ;
+    private OrderedProperties properties ;
 
-    public TableConfig(String tableName, Properties properties) {
+    public TableConfig(String tableName, OrderedProperties properties) {
         this.tableName = tableName ;
         this.properties = properties ;
     }
@@ -16,7 +16,9 @@ public class TableConfig {
         return tableName;
     }
 
-    public Properties getTableConfigProperties() { return properties; }
+    public OrderedProperties getTableConfigProperties() {
+        return properties;
+    }
 
     public String getProperty(String property) {
         String extractedProperty = "" ;

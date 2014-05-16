@@ -1,6 +1,8 @@
 package org.ampathkenya.utils.configparser;
 
 
+import org.ampathkenya.utils.sqlgenerator.OrderedProperties;
+
 import java.io.*;
 import java.util.ArrayList;
 import java.util.Properties;
@@ -56,7 +58,7 @@ public class ConfigFileParser {
             String currentTableConfig = tableConfigs.get(tablesConfigCounter);
 
             String currTableName = extractTableName(currentTableConfig);
-            Properties currTableProperties = extractTableProperties(currentTableConfig);
+            OrderedProperties currTableProperties = extractTableProperties(currentTableConfig);
 
             TableConfig currTableConfig = new TableConfig(currTableName, currTableProperties);
             extractedTableConfigs.add(currTableConfig);
@@ -69,9 +71,9 @@ public class ConfigFileParser {
         return tableConfig.substring(1, tableConfig.indexOf(CLOSING_SQUARE_BRACKET)) ;
     }
 
-    private Properties extractTableProperties(String tableConfig) throws IOException {
+    private OrderedProperties extractTableProperties(String tableConfig) throws IOException {
 
-        Properties extractedProperties = new Properties();
+        OrderedProperties extractedProperties = new OrderedProperties();
         tableConfig = tableConfig.substring(tableConfig.indexOf(CLOSING_SQUARE_BRACKET));
         extractedProperties.load(new ByteArrayInputStream(tableConfig.getBytes()));
         return extractedProperties;
