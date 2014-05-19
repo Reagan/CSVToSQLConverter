@@ -22,6 +22,10 @@ public class Screen {
         outputToScreen(messageToDisplay.toString()) ;
     }
 
+    public <T> void displayTextWithoutNewLine(T messageToDisplay) {
+        outputToScreenWithoutNewLine(messageToDisplay.toString());
+    }
+
     public String receiveInput(String prompt) {
         outputToScreen(prompt);
         return IOUtils.read(System.in) ;
@@ -48,4 +52,7 @@ public class Screen {
         System.out.println(stringToOutput);
     }
 
+    private void outputToScreenWithoutNewLine(String stringToOutput) {
+        System.out.print(stringToOutput);
+    }
 }

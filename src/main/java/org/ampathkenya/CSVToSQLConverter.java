@@ -195,9 +195,11 @@ public class CSVToSQLConverter {
     private static void processCSV(final String csvFilePath,
                                    final TableConfig csvFileConfig) {
 
+         screen.displayText("Processing file " + csvFilePath);
          Thread readCSVThread = new Thread(new Runnable() {
              @Override
              public void run() {
+
                  FileUtils csvFile = new FileUtils(csvFilePath) ;
                  String currCSVContent = null;
                  try {

@@ -1,6 +1,7 @@
 package org.ampathkenya.utils.sqlgenerator;
 
 import com.sun.deploy.util.Property;
+import org.ampathkenya.screen.Screen;
 import org.ampathkenya.utils.configparser.TableConfig;
 
 import java.util.Arrays;
@@ -159,14 +160,27 @@ public class SQLGenerator {
                 tableConfig.getTableName() +
                 "` DISABLE KEYS */;\n" ;
 
+        Screen screen = new Screen() ;
+        screen.displayText("Finding csv data...");
+
         String[] csvLines = splitCSVFileToLines(csvFileContent) ;
 
+        screen.displayText("processing csv data\n");
+        int counter = 1 ;
+        int GROUPING = 100 ;
+
         for (String csvLine : csvLines ) {
+
+            if(counter % GROUPING == 0)
+                screen.displayTextWithoutNewLine(".");
+
             DMLString += "INSERT INTO " +
                     tableConfig.getTableName() +
                     " VALUES (" +
                     csvLine +
                     ");\n" ;
+
+            counter++ ;
         }
 
         DMLString += "/*!40000 ALTER TABLE `" +
