@@ -8,11 +8,9 @@ import org.ampathkenya.utils.argumentprocessor.exception.UndefinedValueException
 import org.ampathkenya.utils.argumentprocessor.exception.UnsupportedFlagException;
 import org.ampathkenya.utils.configparser.ConfigFileParser;
 import org.ampathkenya.utils.configparser.TableConfig;
-import org.ampathkenya.utils.csvparser.CSVParser;
 import org.ampathkenya.utils.sqlgenerator.SQLGenerator;
 
 import java.io.File;
-import java.io.FileReader;
 import java.io.FilenameFilter;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -90,7 +88,7 @@ public class CSVToSQLConverter {
 
     private static void processCSVFiles(HashMap<String, String> programParameters) {
         String pathToCSVFiles = GetParameters.getPath(programParameters) ;
-        ArrayList<TableConfig> tableConfigs = loadTableConfigs(GetParameters.getSQLDumpFilePathOutput(programParameters)) ;
+        ArrayList<TableConfig> tableConfigs = loadTableConfigs(GetParameters.getConfigFilePath(programParameters)) ;
 
         String[] filePaths = loadCSVFiles(pathToCSVFiles) ;
 
@@ -122,8 +120,11 @@ public class CSVToSQLConverter {
 
     private static TableConfig getConfigForCSVFile(String filePath, ArrayList<TableConfig> tableConfigs) {
         TableConfig tableConfig = null;
+        final String FORWARD_SLASH = "/" ;
+        final int OFFSET = 1 ;
 
-        String table = filePath.substring(0, filePath.indexOf(CSV_EXTENSION)) ;
+        String table = filePath.substring(filePath.lastIndexOf(FORWARD_SLASH) + OFFSET,
+                filePath.indexOf(CSV_EXTENSION)) ;
         Iterator<TableConfig> tableConfigIterator = tableConfigs.iterator();
 
         while(tableConfigIterator.hasNext()) {
@@ -146,17 +147,11 @@ public class CSVToSQLConverter {
     }
 
     private static boolean isDir(String pathToCSVFiles) {
-        if(isValidPath(pathToCSVFiles)) {
-            return new File(pathToCSVFiles).isDirectory() ;
-        }
-        return false ;
+        return new File(pathToCSVFiles).isDirectory() ;
     }
 
     private static boolean isFile(String pathToCSVFiles) {
-        if(isValidPath(pathToCSVFiles)) {
-            return new File(pathToCSVFiles).isFile() ;
-        }
-        return false ;
+        return new File(pathToCSVFiles).isFile() ;
     }
 
     private static boolean isValidPath(String path) {
@@ -181,12 +176,20 @@ public class CSVToSQLConverter {
 
     private static String[] getCSVFileNames(String pathToCSVFiles) {
         File dir = new File(pathToCSVFiles) ;
-        return dir.list(new FilenameFilter() {
-            @Override
-            public boolean accept(File dir, String fileName) {
-                return fileName.endsWith(CSV_EXTENSION);
-            }
-        }) ;
+        String[] csvFiles = null ;
+
+        if(dir.isFile()) {
+                csvFiles = new String[1] ;
+                csvFiles[0] = pathToCSVFiles ;
+        } else if (dir.isDirectory()) {
+            csvFiles =  dir.list(new FilenameFilter() {
+                @Override
+                public boolean accept(File dir, String fileName) {
+                    return fileName.endsWith(CSV_EXTENSION);
+                }
+            }) ;
+        }
+        return csvFiles ;
     }
 
     private static void processCSV(final String csvFilePath,
@@ -195,9 +198,14 @@ public class CSVToSQLConverter {
          Thread readCSVThread = new Thread(new Runnable() {
              @Override
              public void run() {
-                CSVParser csvParser = new CSVParser() ;
-                String currCSVContent = csvParser.read(csvFilePath) ;
-                writeSQLDumpFile(currCSVContent, csvFileConfig) ;
+                 FileUtils csvFile = new FileUtils(csvFilePath) ;
+                 String currCSVContent = null;
+                 try {
+                     currCSVContent = csvFile.read();
+                     writeSQLDumpFile(currCSVContent, csvFileConfig) ;
+                 } catch (IOException e) {
+                     e.printStackTrace();
+                 }
              }
          });
 
@@ -214,7 +222,7 @@ public class CSVToSQLConverter {
         return tableConfigs ;
     }
 
-    private static boolean tableConfigFileExists(String pathToConfigFile) {
+    public static boolean tableConfigFileExists(String pathToConfigFile) {
         return new File(pathToConfigFile).exists() ;
     }
 
@@ -236,7 +244,17 @@ public class CSVToSQLConverter {
         sqlGenerator = new SQLGenerator(csvContent, csvFileConfig) ;
         outputConfigParamsForCSVFile(sqlGenerator, csvFileConfig) ;
         writeToFile(generateSQLDump(sqlGenerator, csvContent, csvFileConfig),
-                GetParameters.getSQLDumpFilePathOutput(programParameters)) ;
+                loadOutputFile(csvFileConfig.getTableName(), GetParameters.getSQLDumpFilePathOutput(programParameters))) ;
+    }
+
+    private static String loadOutputFile(String defaultTableName, String specifiedOutputFile) {
+        final String SQL_EXTENSION = ".sql" ;
+        if(null == specifiedOutputFile ||
+                specifiedOutputFile == "") {
+            return defaultTableName + SQL_EXTENSION ;
+        }
+        return specifiedOutputFile.contains(SQL_EXTENSION)
+                ? specifiedOutputFile : specifiedOutputFile + SQL_EXTENSION ;
     }
 
     private static void outputConfigParamsForCSVFile(SQLGenerator sqlGenerator, TableConfig csvTableConfig) {
@@ -260,10 +278,11 @@ public class CSVToSQLConverter {
 
     static class GetParameters {
 
-        static String PATH_FLAG = "-p" ;
-        static String SQL_DUMP_OUTPUT_PATH_FLAG = "-o" ;
-        static String DEFAULTS_FLAG = "-d" ;
-        static String DROP_TABLE_FLAG = "-a" ;
+        static String PATH_FLAG = "p" ;
+        static String SQL_DUMP_OUTPUT_PATH_FLAG = "o" ;
+        static String DEFAULTS_FLAG = "d" ;
+        static String DROP_TABLE_FLAG = "a" ;
+        static String CONFIG_FILE_PATH_FLAG = "c" ;
 
         static String getPath(HashMap<String, String> params) {
             return params.get(PATH_FLAG) ;
@@ -279,6 +298,10 @@ public class CSVToSQLConverter {
 
         static boolean getDropTable(HashMap<String, String> params) {
             return (params.get(DROP_TABLE_FLAG) == "true") ? true : false ;
+        }
+
+        static String getConfigFilePath(HashMap<String, String> params) {
+            return (params.get(CONFIG_FILE_PATH_FLAG)) ;
         }
 
     }

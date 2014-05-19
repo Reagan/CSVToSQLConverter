@@ -72,9 +72,9 @@ public class ConfigFileParser {
     }
 
     private OrderedProperties extractTableProperties(String tableConfig) throws IOException {
-
+        final int OFFSET = 1 ;
         OrderedProperties extractedProperties = new OrderedProperties();
-        tableConfig = tableConfig.substring(tableConfig.indexOf(CLOSING_SQUARE_BRACKET));
+        tableConfig = tableConfig.substring(tableConfig.indexOf(CLOSING_SQUARE_BRACKET) + OFFSET);
         extractedProperties.load(new ByteArrayInputStream(tableConfig.getBytes()));
         return extractedProperties;
     }

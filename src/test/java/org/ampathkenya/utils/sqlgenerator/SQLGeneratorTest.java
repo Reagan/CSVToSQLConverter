@@ -43,7 +43,16 @@ public class SQLGeneratorTest extends TestCase {
 
         assertTrue("Test that correct table name config is displayed",
                 sqlGenerator.displayTableConfig().contains(expectedConfigsTableNameProperty));
-
+        assertTrue("Test that correct table name config id is displayed",
+                sqlGenerator.displayTableConfig().contains(expectedConfigsIDProperty));
+        assertTrue("Test that correct table name config first name is displayed",
+                sqlGenerator.displayTableConfig().contains(expectedConfigsFirstNameProperty));
+        assertTrue("Test that correct table name config second name is displayed",
+                sqlGenerator.displayTableConfig().contains(expectedConfigsSecondNameProperty));
+        assertTrue("Test that correct table name config primary key is displayed",
+                sqlGenerator.displayTableConfig().contains(expectedConfigsPrimaryKeyProperty));
+        assertTrue("Test that correct table name config foreign key is displayed",
+                sqlGenerator.displayTableConfig().contains(expectedConfigsForeignKeyProperty));
     }
 
     public void testThatSQLDumpFileIsGenerated() {
@@ -84,7 +93,7 @@ public class SQLGeneratorTest extends TestCase {
                 "-- Dumping data for table `table1`\n" +
                 "--\n" +
                 "\n" +
-                "LOCK TABLES `test1` WRITE;\n" +
+                "LOCK TABLES `table1` WRITE;\n" +
                 "/*!40000 ALTER TABLE `table1` DISABLE KEYS */;\n" +
                 "INSERT INTO table1 VALUES (1,\"First\",\"User\");\n" +
                 "INSERT INTO table1 VALUES (2,\"Second\",\"User\");\n" +

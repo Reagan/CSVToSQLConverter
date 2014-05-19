@@ -31,5 +31,11 @@ public class FileUtils {
         fileWriter.close();
         fileWriter = null ;
     }
+
+    public void deleteFile() {
+        if(filePath != null) {
+            file.delete() ;
+        }
+    }
 }
 

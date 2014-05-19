@@ -152,7 +152,9 @@ public class SQLGenerator {
                 "`\n" +
                 "--\n" +
                 "\n" +
-                "LOCK TABLES `test1` WRITE;\n" +
+                "LOCK TABLES `"
+                + tableConfig.getTableName() +
+                "` WRITE;\n" +
                 "/*!40000 ALTER TABLE `" +
                 tableConfig.getTableName() +
                 "` DISABLE KEYS */;\n" ;
