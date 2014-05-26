@@ -4,4 +4,4 @@ target/
 *.iml
 *.swp
 .*
-
+out/
