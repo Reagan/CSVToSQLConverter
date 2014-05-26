@@ -29,18 +29,18 @@ The script terminates if the path to csv files or the config file to each of the
 
 Each of the csv files that requires to be converted to SQL requires to be declared in the config file. An example config file may be structured as follows:
 
-[csvfile1]
-id=int, auto_increment 
-firstname=varchar(255)
-secondname=varchar(255)
-primarykey=autoincrement 
-foreignkey=id REFERENCES cars.owner_id
+>> [csvfile1]
+>> id=int, auto_increment 
+>> firstname=varchar(255)
+>> secondname=varchar(255)
+>> primarykey=autoincrement 
+>> foreignkey=id REFERENCES cars.owner_id
 
 This config file may be mapped to a csv file that must be named csvfile.csv with the following structure:
 
-id,firstname,secondname
-1,"Antony","Ojwang"
-2,"Reagan","Mbitiru"
+>> id,firstname,secondname
+>> 1,"Antony","Ojwang"
+>> 2,"Reagan","Mbitiru"
 
 All csv files must have the first row specifying the table columns for the table to be generated.
 
