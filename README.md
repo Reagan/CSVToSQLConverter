@@ -46,5 +46,4 @@ All csv files must have the first row specifying the table columns for the table
 
 Additional examples can be found in the documentation folder of this repository
 
-
-
+**You can obtain a compiled jar file from the 'compiled' folder of this repository**
